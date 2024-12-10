@@ -1,0 +1,115 @@
+/* Asegúrate de que el carrusel ocupe el 80% del ancho de la pantalla */
+.carousel-container {
+    width: 90%;
+    margin: 0 auto; /* Centra el carrusel en la pantalla */
+}
+
+/* Ajusta la altura de las imágenes dentro del carrusel */
+.carousel-inner img {
+    width: 100%; /* Asegúrate de que las imágenes ocupen todo el ancho del contenedor */
+    height: auto; /* Mantén la proporción de las imágenes */
+    object-fit: cover; /* Asegúrate de que las imágenes se ajusten correctamente sin distorsionar */
+}
+
+body {
+    background-color: #E2EDF5; /* Color de fondo claro para probar */
+}
+
+/* Cambiar el color de fondo del encabezado (navbar) */
+.navbar {
+    background-color: #004080 !important; /* Azul fuerte */
+}
+
+/* Cambiar el color del texto del encabezado */
+.navbar .navbar-brand, 
+.navbar .nav-link {
+    color: #ffffff !important; /* Texto blanco */
+}
+
+/* Cambiar el color del texto cuando se pasa el cursor */
+.navbar .nav-link:hover {
+    color: #cce7ff !important; /* Azul más claro al pasar el cursor */
+}
+
+/* Cambiar el color de fondo del pie de página */
+footer.bg-light {
+    background-color: #004080 !important; /* Azul fuerte */
+}
+
+/* Cambiar el color del texto del pie de página */
+footer.bg-light .text-uppercase, 
+footer.bg-light p {
+    color: #ffffff !important; /* Texto blanco */
+}
+
+/* Cambiar el color de fondo del pie de página inferior */
+footer .bg-dark {
+    background-color: #002850 !important; /* Azul más oscuro */
+}
+
+html, body {
+    height: 100%;
+    margin: 0; /* Elimina el margen predeterminado */
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    margin: 0; /* Elimina el margen predeterminado */
+}
+
+main {
+    flex: 1;
+}
+
+footer {
+    background-color: #f8f9fa;
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.carousel-item .col-md-2 {
+    flex: 0 0 20%; /* Cada producto ocupa el 20% del ancho del contenedor */
+    max-width: 20%;
+}
+
+.carousel-inner {
+    width: 100%; 
+}
+
+/* Ajusta el espacio en el contenedor de los productos para que las imágenes se ajusten adecuadamente */
+.row.no-gutters {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.row.no-gutters > .col-md-4 {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.card-img-top {
+    height: 180px; /* Ajusta la altura de las imágenes según sea necesario */
+    object-fit: cover; /* Mantén la proporción de la imagen sin distorsionar */
+}
+
+/* Ajusta el contenedor de la tarjeta para que el contenido no sea cortado */
+.card {
+    overflow: hidden; /* Evita que el contenido de la tarjeta se desborde */
+}
+
+/* Ajusta la posición del botón dentro del panel */
+.text-center.mt-4 {
+    margin-top: 1rem; /* Ajusta este valor según sea necesario */
+}
+
+/* Ajusta el botón para que esté más cerca del borde superior */
+.text-center.mt-4 a {
+    display: inline-block; /* Asegúrate de que el botón se comporte como un bloque en línea */
+    margin-top: -2.5rem; /* Ajusta este valor para mover el botón más arriba */
+}
+
+/* Ajusta el espacio en el panel */
+.card-body {
+    padding: 0.5rem; /* Ajusta el padding para un mejor ajuste */
+}
