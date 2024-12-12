@@ -109,6 +109,7 @@ public function edit($id)
 // Método para actualizar el producto en la base de datos
 public function update(Request $request, $id)
 {
+    
     $producto = Producto::findOrFail($id);
     
     // Validar los datos
@@ -143,7 +144,7 @@ public function update(Request $request, $id)
         $producto->imagen_url = '/images/' . $imageName; // Actualizar el nombre del campo a 'imagen_url'
     }
 
-    if (!$request->file('imagen')->isValid()) {
+    if ($request->hasFile('imagen') && !$request->file('imagen')->isValid()) {
         return back()->with('error', 'Error al subir la imagen');
     }
 

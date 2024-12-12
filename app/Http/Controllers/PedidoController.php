@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pedido;
+use App\Models\Producto;
 
 class PedidoController extends Controller
 {
@@ -146,6 +147,15 @@ class PedidoController extends Controller
     session()->forget('carrito');
 
     return redirect()->route('productos.index')->with('success', 'Pedido confirmado con éxito.');
+    }
+
+    // Metodo que permite mostrar los detalles del pedido comprado por el cliente.
+    public function verPedido($id)
+    {
+        $pedido = Pedido::findOrFail($id);
+        $producto = $pedido->productos->first(); // Ajusta según tu lógica para obtener el producto asociado
+
+        return view('pedidos.verPedido', compact('pedido', 'producto'));
     }
 
 }

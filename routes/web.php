@@ -57,6 +57,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/mis-compras', [PedidoController::class, 'miHistorial'])->name('pedidos.historial');
     Route::get('/pedidos/detalles', [PedidoController::class, 'detallesPedido'])->name('pedidos.detalles');
     Route::post('/pedidos/confirmar', [PedidoController::class, 'confirmarPedido'])->name('pedidos.confirmar');
+    
+    //Ruta para que el cliente pueda visualizar los detalles del pedido de su compra
+    Route::get('/pedidos/{id}/ver', [PedidoController::class, 'verPedido'])->name('pedidos.verPedido');
 
 
     //Ruta que se utiliza para actualizar el numero de productos en el carrito en tiempo real.

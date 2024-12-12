@@ -14,7 +14,7 @@
         <table class="table table-bordered text-center">
             <thead class="thead-light">
                 <tr>
-                    <th>ID</th>
+                    <th>Producto</th>
                     <th>Total</th>
                     <th>Estado</th>
                     <th>Fecha</th>
@@ -22,15 +22,32 @@
             </thead>
             <tbody>
                 @foreach($pedidos as $pedido)
-                    <tr>
-                        <td>{{ $pedido->id }}</td>
-                        <td>${{ $pedido->total }}</td>
-                        <td>{{ ucfirst($pedido->status) }}</td>
-                        <td>{{ $pedido->created_at->format('d/m/Y H:i') }}</td>
-                    </tr>
+                    @foreach($pedido->productos as $producto)
+                        <tr>
+                            <td>
+                            <a href="{{ route('pedidos.verPedido', $pedido->id) }}">
+                              <img src="{{ $producto->imagen_url }}" alt="{{ $producto->nombre }}" class="img-thumbnail efecto-zoom" style="width: 80px; height: auto;">
+                            </a>
+                            </td>
+                            <td>${{ $pedido->total }}</td>
+                            <td>{{ ucfirst($pedido->status) }}</td>
+                            <td>{{ $pedido->created_at->format('d/m/Y H:i') }}</td>
+                        </tr>
+                    @endforeach
                 @endforeach
             </tbody>
         </table>
     @endif
 </div>
+
+<style>
+    .efecto-zoom {
+        transition: transform 0.3s ease;
+    }
+    .efecto-zoom:hover {
+        transform: scale(1.5);
+    }
+</style>
 @endsection
+
+
