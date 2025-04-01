@@ -3,20 +3,14 @@
 @section('content')
 <div class="container d-flex justify-content-center">
     <div class="row w-100">
-        <!-- Imagen actual del producto -->
-        <div class="col-md-4 d-flex flex-column align-items-center" style="margin-top: 120px;"> <!-- Ajuste para bajar la imagen -->
-            @if($producto->imagen_url)
-                <img src="{{ $producto->imagen_url }}" alt="{{ $producto->nombre }}" class="img-thumbnail mb-3" style="width: 100%; max-width: 300px; height: auto;">
-            @else
-                <div class="text-muted mb-3">No hay imagen disponible</div>
-            @endif
+        
+      <!-- Imagen actual del producto -->
+    <div class="col-md-4 d-flex flex-column align-items-center" style="margin-top: 120px;">
+          <img id="current-image" src="{{ $producto->imagen_url ?? '' }}" alt="{{ $producto->nombre }}" class="img-thumbnail mb-3" style="width: 100%; max-width: 300px; height: auto; display: {{ $producto->imagen_url ? 'block' : 'none' }};">
+        <div id="no-image" class="text-muted mb-3" style="display: {{ $producto->imagen_url ? 'none' : 'block' }};">No hay imagen disponible</div>
 
-            <!-- Cambiar Imagen del Producto -->
-            <div class="form-group mt-3">
-                <label for="imagen">Cambiar Imagen del Producto</label>
-                <input type="file" name="imagen" class="form-control-file" id="imagen">
-            </div>
-        </div>
+      
+    </div>
 
         <!-- Formulario para editar un producto -->
         <div class="col-md-8">
@@ -37,6 +31,12 @@
                 <div class="form-group">
                     <label for="nombre">Nombre del Producto</label>
                     <input type="text" name="nombre" class="form-control" id="nombre" value="{{ old('nombre', $producto->nombre) }}" required>
+                </div>
+                 
+                <!-- Cambiar Imagen del Producto -->
+                <div class="form-group mt-3">
+                    <label for="imagen">Cambiar Imagen del Producto</label>
+                    <input type="file" name="imagen" class="form-control-file" id="imagen" onchange="previewImage(event)">
                 </div>
 
                 <!-- Descripción del Producto -->
@@ -91,6 +91,9 @@
 </div>
 
 <script>
+
+
+
     function toggleOferta() {
         const ofertaCheckbox = document.getElementById('es_oferta');
         const precioOfertaInput = document.getElementById('precio_oferta');
@@ -108,6 +111,28 @@
             window.location.href = "{{ route('categorias.create') }}";
         }
     });
+
+    
+   function previewImage(event) {
+      const input = event.target;
+      const currentImage = document.getElementById('current-image');
+      const noImage = document.getElementById('no-image');
+
+     if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            currentImage.src = e.target.result;
+            currentImage.style.display = 'block';
+            noImage.style.display = 'none';
+        }
+        reader.readAsDataURL(input.files[0]);
+     } else {
+        currentImage.src = '';
+        currentImage.style.display = 'none';
+        noImage.style.display = 'block';
+     }
+   }
+
 </script>
 
 @endsection

@@ -95,6 +95,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Rutas para Pedidos
     Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
     Route::put('/pedidos/{id}/status', [PedidoController::class, 'updateStatus'])->name('pedidos.updateStatus');
+    
 
 
 });

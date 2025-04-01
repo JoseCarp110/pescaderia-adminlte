@@ -33,16 +33,24 @@ class ProductosController extends Controller
             'descripcion' => 'nullable|string',
             'precio' => 'required|numeric',
             'cantidad' => 'required|integer|min:0',
-            'imagen' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            //'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'es_oferta' => 'nullable|boolean', // Validación para el campo es_oferta
             'precio_oferta' => 'nullable|numeric|lt:precio', // Validación para el campo precio_oferta, menor que precio
             'categoria_id' => 'required|exists:categorias,id' // Validacion para el campo de categorias
         ]);
-    
+        
+        if (!$request->hasFile('imagen')) {
+            return back()->with('error', 'No se detectó ninguna imagen en la solicitud');
+        }
+
+        // Validar la imagen
+        $request->validate([
+        'imagen' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
         // Subir la imagen
-        if ($request->hasFile('imagen')) {
-            $imageName = time().'.'.$request->imagen->extension();  
-            $request->imagen->move(public_path('images'), $imageName);
+        $imageName = time().'.'.$request->imagen->extension();  
+        $request->imagen->move(public_path('images'), $imageName);
     
             // Guardar el producto en la base de datos
             Producto::create([
@@ -55,17 +63,11 @@ class ProductosController extends Controller
                 'precio_oferta' => $request->precio_oferta, // Guarda el precio de oferta si está presente
                 'categoria_id' => $request->categoria_id,
             ]);
-        }
-
-        if (!$request->file('imagen')->isValid()) {
-            return back()->with('error', 'Error al subir la imagen');
-        }
     
         // Redirigir a la página de productos o mostrar un mensaje de éxito
         return redirect()->route('productos.index')->with('success', 'Producto agregado con éxito.');
     }
     
-
 
 
     
@@ -109,49 +111,46 @@ public function edit($id)
 // Método para actualizar el producto en la base de datos
 public function update(Request $request, $id)
 {
-    
+    // Obtener el producto de la base de datos
     $producto = Producto::findOrFail($id);
-    
-    // Validar los datos
+
+    // Validar los datos del formulario
     $request->validate([
         'nombre' => 'required|string|max:255',
         'descripcion' => 'nullable|string',
-        'precio' => 'required|numeric',
         'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'precio' => 'required|numeric',
+        'es_oferta' => 'boolean',
+        'precio_oferta' => 'nullable|numeric',
         'categoria_id' => 'required|exists:categorias,id',
+        'cantidad' => 'required|integer|min:0',
     ]);
-    
-    // Actualizar los campos
-    $producto->nombre = $request->input('nombre');
-    $producto->descripcion = $request->input('descripcion');
-    $producto->precio = $request->input('precio');
-    $producto->categoria_id = $request->input('categoria_id');
 
-    // Si se carga una nueva imagen
+    // Actualizar los datos del producto (excepto la imagen)
+    $producto->update($request->except('imagen'));
+
+    // Procesar la imagen si se sube una nueva
     if ($request->hasFile('imagen')) {
-        // Eliminar la imagen anterior si existe
+        $file = $request->file('imagen');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $filePath = $file->storeAs('images', $fileName, 'public');
+
+        // Eliminar imagen anterior si existe
         if ($producto->imagen_url) {
-            // Asegúrate de eliminar la imagen correctamente
-            $imagePath = public_path($producto->imagen_url);
-            if (file_exists($imagePath)) {
-                unlink($imagePath);
-            }
+            Storage::disk('public')->delete($producto->imagen_url);
         }
 
-        // Guardar la nueva imagen en 'public/images'
-        $imageName = time().'.'.$request->imagen->extension();  
-        $request->imagen->move(public_path('images'), $imageName);
-        $producto->imagen_url = '/images/' . $imageName; // Actualizar el nombre del campo a 'imagen_url'
+        // Guardar la nueva imagen en la BD
+        $producto->imagen_url = $filePath;
     }
 
-    if ($request->hasFile('imagen') && !$request->file('imagen')->isValid()) {
-        return back()->with('error', 'Error al subir la imagen');
-    }
-
+    // Guardar cambios finales en la BD
     $producto->save();
 
-    return redirect()->route('productos.index')->with('success', 'Producto actualizado correctamente.');
+    return redirect()->route('productos.index')->with('success', 'Producto actualizado correctamente');
 }
+
+
 
 // Método para eliminar un producto
 public function destroy($id)
