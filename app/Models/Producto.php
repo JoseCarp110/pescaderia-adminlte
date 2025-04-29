@@ -21,4 +21,18 @@ class Producto extends Model
     {
     return $this->belongsToMany(Pedido::class, 'pedido_producto')->withPivot('cantidad', 'precio');
     }
+
+    
+    public function getImagenUrlAttribute()
+    {
+    $ruta = $this->attributes['imagen_url'] ?? null;
+
+    if ($ruta && file_exists(public_path('storage/' . $ruta))) {
+        return asset('storage/' . $ruta);
+    } else {
+        return asset('images/default.jpg');
+    }
+    }
+
+
 }

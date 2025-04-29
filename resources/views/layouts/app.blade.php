@@ -83,7 +83,7 @@
                     <!-- Menú desplegable para el usuario -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">
-                            <img src="{{ Auth::user()->profile_picture ? asset(Auth::user()->profile_picture) : 'https://via.placeholder.com/30' }}" alt="Foto de perfil" class="rounded-circle" width="30" height="30" style="margin-right: 8px;">
+                            <img src="{{ Auth::user()->profile_picture_url }}" alt="Foto de perfil" class="rounded-circle" width="30" height="30" style="margin-right: 8px;">
                             {{ Auth::user()->role == 'admin' ? 'Admin' : 'Comun' }} {{ Auth::user()->name }}
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">

@@ -6,13 +6,13 @@
         <!-- Miniaturas -->
         <div class="col-md-1">
             <div class="row mb-2">
-                <img src="https://via.placeholder.com/300" alt="Imagen por defecto" class="img-fluid">
+                <img src="https://placehold.co/300x300?text=Sin+Imagen&font=roboto" alt="Imagen por defecto" class="img-fluid">
             </div>
             <div class="row mb-2">
-                <img src="https://via.placeholder.com/300" alt="Imagen por defecto" class="img-fluid">
+                <img src="https://placehold.co/300x300?text=Sin+Imagen&font=roboto" alt="Imagen por defecto" class="img-fluid">
             </div>
             <div class="row mb-2">
-                <img src="https://via.placeholder.com/300" alt="Imagen por defecto" class="img-fluid">
+                <img src="https://placehold.co/300x300?text=Sin+Imagen&font=roboto" alt="Imagen por defecto" class="img-fluid">
             </div>
         </div>
 
@@ -25,10 +25,10 @@
                     </div>
                     <!-- Imágenes adicionales por defecto -->
                     <div class="carousel-item">
-                        <img src="https://via.placeholder.com/300" alt="Imagen por defecto 1" class="img-fluid">
+                        <img src="https://placehold.co/300x300?text=Sin+Imagen&font=roboto" alt="Imagen por defecto 1" class="img-fluid">
                     </div>
                     <div class="carousel-item">
-                        <img src="https://via.placeholder.com/300" alt="Imagen por defecto 2" class="img-fluid">
+                        <img src="https://placehold.co/300x300?text=Sin+Imagen&font=roboto" alt="Imagen por defecto 2" class="img-fluid">
                     </div>
                 </div>
                 <!-- Controles del carrusel -->

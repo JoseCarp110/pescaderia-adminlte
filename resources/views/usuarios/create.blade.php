@@ -3,14 +3,19 @@
 @section('content')
 <div class="container d-flex justify-content-center">
     <div class="row w-100">
-        <!-- Imagen para el nuevo usuario -->
-        <div class="col-md-4 d-flex flex-column align-items-center" style="margin-top: 120px;"> <!-- Ajuste para bajar la imagen -->
-            <!-- Mostrar imagen seleccionada o marcador de posición -->
-            <img id="imagen_previa" src="https://via.placeholder.com/300" alt="Foto de perfil" class="img-thumbnail mb-3" style="width: 100%; max-width: 300px; height: auto;">
+        <!-- Imagen para el nuevo usuario + input -->
+        <div class="col-md-4 d-flex flex-column align-items-center" style="margin-top: 120px;">
+            <!-- Imagen previa -->
+            <img id="imagen_previa" 
+                 src="https://placehold.co/300x300?text=Sin+Imagen&font=roboto" 
+                 alt="Foto de perfil" 
+                 class="img-thumbnail mb-3" 
+                 style="width: 100%; max-width: 300px; height: auto;">
             
-            <!-- Seleccionar Imagen de Perfil -->
-            <div class="form-group mt-3">
-                <input type="file" name="profile_picture" class="form-control-file" id="profile_picture" onchange="mostrarImagenPrevia(event)">
+            <!-- Input de imagen -->
+            <div class="form-group w-100 px-3">
+                <label for="profile_picture" class="text-center w-100">Seleccionar Imagen de Perfil</label>
+                <input type="file" name="profile_picture" class="form-control-file" id="profile_picture">
             </div>
         </div>
 
@@ -39,7 +44,7 @@
                     @enderror
                 </div>
 
-                <!-- Contraseña y Confirmar Contraseña en la misma fila -->
+                <!-- Contraseña y Confirmación -->
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="password">Contraseña</label>
@@ -66,7 +71,7 @@
                     @enderror
                 </div>
 
-                <!-- Botón de Enviar -->
+                <!-- Botones -->
                 <button type="submit" class="btn btn-primary mt-4">Añadir Usuario</button>
                 <a href="{{ route('usuarios.index') }}" class="btn btn-secondary mt-4">Cancelar</a>
             </form>
@@ -75,14 +80,17 @@
 </div>
 
 <script>
-    function mostrarImagenPrevia(event) {
-        const imagenPrevia = document.getElementById('imagen_previa');
-        imagenPrevia.src = URL.createObjectURL(event.target.files[0]);
-        imagenPrevia.onload = function() {
-            URL.revokeObjectURL(imagenPrevia.src);
-        };
-    }
+    document.getElementById('profile_picture').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('imagen_previa').setAttribute('src', e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 </script>
-
 @endsection
+
 

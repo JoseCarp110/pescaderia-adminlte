@@ -25,7 +25,7 @@
         <div class="col-lg-3 col-md-4 col-sm-6 producto-item" data-producto-id="{{ $producto->id }}">
             <div class="card border-0 position-relative producto-card">
                 <div class="producto-img-container">
-                    <img src="{{ $producto->imagen_url }}" class="img-fluid producto-img" alt="{{ $producto->nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="{{ $producto->imagen_url }}"  class="img-fluid producto-img" alt="{{ $producto->nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 <div class="producto-info position-absolute w-100 h-100 d-flex align-items-center justify-content-center flex-column">
                     <h5 class="text-white text-center fw-bold">{{ $producto->nombre }}</h5>

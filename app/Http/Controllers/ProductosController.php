@@ -27,49 +27,36 @@ class ProductosController extends Controller
      */
     public function store(Request $request)
     {
-        // Validar la solicitud
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
-            'precio' => 'required|numeric',
-            'cantidad' => 'required|integer|min:0',
-            //'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'es_oferta' => 'nullable|boolean', // Validación para el campo es_oferta
-            'precio_oferta' => 'nullable|numeric|lt:precio', // Validación para el campo precio_oferta, menor que precio
-            'categoria_id' => 'required|exists:categorias,id' // Validacion para el campo de categorias
-        ]);
-        
-        if (!$request->hasFile('imagen')) {
-            return back()->with('error', 'No se detectó ninguna imagen en la solicitud');
-        }
+    $request->validate([
+        'nombre' => 'required|string|max:255',
+        'descripcion' => 'nullable|string',
+        'precio' => 'required|numeric',
+        'cantidad' => 'required|integer|min:0',
+        'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'es_oferta' => 'nullable|boolean',
+        'precio_oferta' => 'nullable|numeric|lt:precio',
+        'categoria_id' => 'required|exists:categorias,id'
+    ]);
 
-        // Validar la imagen
-        $request->validate([
-        'imagen' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
-
-        // Subir la imagen
-        $imageName = time().'.'.$request->imagen->extension();  
-        $request->imagen->move(public_path('images'), $imageName);
-    
-            // Guardar el producto en la base de datos
-            Producto::create([
-                'nombre' => $request->nombre,
-                'descripcion' => $request->descripcion,
-                'precio' => $request->precio,
-                'cantidad' => $request->cantidad,
-                'imagen_url' => '/images/' . $imageName,
-                'es_oferta' => $request->has('es_oferta') ? true : false, // Guarda si es una oferta o no
-                'precio_oferta' => $request->precio_oferta, // Guarda el precio de oferta si está presente
-                'categoria_id' => $request->categoria_id,
-            ]);
-    
-        // Redirigir a la página de productos o mostrar un mensaje de éxito
-        return redirect()->route('productos.index')->with('success', 'Producto agregado con éxito.');
+    $imagePath = null;
+    if ($request->hasFile('imagen')) {
+        $imagePath = $request->file('imagen')->store('productos', 'public');
     }
-    
 
+    Producto::create([
+        'nombre' => $request->nombre,
+        'descripcion' => $request->descripcion,
+        'precio' => $request->precio,
+        'cantidad' => $request->cantidad,
+        'imagen_url' => $imagePath,
+        'es_oferta' => $request->has('es_oferta'),
+        'precio_oferta' => $request->precio_oferta,
+        'categoria_id' => $request->categoria_id,
+    ]);
 
+    return redirect()->route('productos.index')->with('success', 'Producto agregado con éxito.');
+    }
+ 
     
     /**
       * Mostrar la lista de productos.
@@ -111,10 +98,8 @@ public function edit($id)
 // Método para actualizar el producto en la base de datos
 public function update(Request $request, $id)
 {
-    // Obtener el producto de la base de datos
     $producto = Producto::findOrFail($id);
 
-    // Validar los datos del formulario
     $request->validate([
         'nombre' => 'required|string|max:255',
         'descripcion' => 'nullable|string',
@@ -126,25 +111,17 @@ public function update(Request $request, $id)
         'cantidad' => 'required|integer|min:0',
     ]);
 
-    // Actualizar los datos del producto (excepto la imagen)
-    $producto->update($request->except('imagen'));
-
-    // Procesar la imagen si se sube una nueva
     if ($request->hasFile('imagen')) {
-        $file = $request->file('imagen');
-        $fileName = time() . '_' . $file->getClientOriginalName();
-        $filePath = $file->storeAs('images', $fileName, 'public');
-
-        // Eliminar imagen anterior si existe
-        if ($producto->imagen_url) {
-            Storage::disk('public')->delete($producto->imagen_url);
+        $oldPath = public_path('storage/' . $producto->imagen_url);
+        if ($producto->imagen_url && file_exists($oldPath)) {
+            unlink($oldPath);
         }
 
-        // Guardar la nueva imagen en la BD
-        $producto->imagen_url = $filePath;
+        $imagePath = $request->file('imagen')->store('productos', 'public');
+        $producto->imagen_url = $imagePath;
     }
 
-    // Guardar cambios finales en la BD
+    $producto->fill($request->except('imagen'));
     $producto->save();
 
     return redirect()->route('productos.index')->with('success', 'Producto actualizado correctamente');

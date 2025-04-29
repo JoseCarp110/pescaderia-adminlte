@@ -21,11 +21,7 @@
                 <tr>
                     <td>
                         <!-- Mostrar la foto del usuario -->
-                        @if($usuario->profile_picture)
-                            <img src="{{ asset($usuario->profile_picture) }}" alt="Foto de perfil" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
-                        @else
-                            <img src="https://via.placeholder.com/50" alt="Sin imagen" class="img-thumbnail">
-                        @endif
+                        <img src="{{ $usuario->profile_picture_url }}" alt="Foto de perfil" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
                     </td>
                     <td>{{ $usuario->name }}</td>
                     <td>{{ $usuario->email }}</td>
