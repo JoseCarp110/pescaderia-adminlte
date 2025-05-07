@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/usuarios/{id}', [UserController::class, 'update'])->name('usuarios.update'); // Actualiza los usuarios editados
 
     // Rutas para el carrito
+    //Route::get('/carrito', [CarritoController::class, 'index'])->name('carrito.index');
     Route::get('/carrito', [CarritoController::class, 'index'])->name('carrito.index');
     Route::post('/carrito/agregar/{producto}', [CarritoController::class, 'agregar'])->name('carrito.agregar');
     Route::post('/carrito/actualizar/{producto}', [CarritoController::class, 'actualizar'])->name('carrito.actualizar');
@@ -96,6 +97,26 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
     Route::put('/pedidos/{id}/status', [PedidoController::class, 'updateStatus'])->name('pedidos.updateStatus');
     
+    
 
+
+     // ========================================================================
+    // Rutas de TESTING ========================================================
+   // ==========================================================================
+   
+   // Home principal cuando se loguea un usuario administrador o común
+      Route::get('/home', function () {
+         return view('testing.home');
+      });
+
+   // RUTAS PROTEGIDAS PARA LOS ADMINISTRADORES (versión testing con AdminLTE)
+      Route::prefix('testing/usuarios')->name('testing.usuarios.')->group(function () {
+         Route::get('/', [UserController::class, 'indexTesting'])->name('index');
+         Route::get('/create', [UserController::class, 'createTesting'])->name('create');
+         Route::post('/', [UserController::class, 'storeTesting'])->name('store');
+         Route::get('/{id}/edit', [UserController::class, 'editTesting'])->name('edit');
+         Route::put('/{id}', [UserController::class, 'updateTesting'])->name('update');
+         Route::delete('/{id}', [UserController::class, 'destroyTesting'])->name('destroy');
+      });
 
 });
