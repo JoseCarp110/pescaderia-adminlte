@@ -20,7 +20,6 @@ class ProductosController extends Controller
     return view('productos.create', compact('categorias'));
     }
 
-
     
     /**
      * Guardar un nuevo producto en la base de datos.
@@ -84,7 +83,6 @@ class ProductosController extends Controller
     }
 
 
-
 // Método para mostrar la vista de edición
 public function edit($id)
 {
@@ -92,7 +90,6 @@ public function edit($id)
     $categorias = Categoria::all();
     return view('productos.edit', compact('producto', 'categorias'));
 }
-
 
 
 // Método para actualizar el producto en la base de datos
@@ -128,7 +125,6 @@ public function update(Request $request, $id)
 }
 
 
-
 // Método para eliminar un producto
 public function destroy($id)
 {
@@ -154,5 +150,141 @@ public function mostrarDetalle($id)
     }
     return view('productos.detalle', compact('producto'));
 }
+
+
+
+
+//METODOS DE TESTING **********************************************
+
+ // METODO QUE LISTA TODOS LOS PRODUCTOS
+public function indexTesting(Request $request)
+{
+    $query = Producto::query();
+
+    if ($request->filled('search')) {
+        $query->where(function ($q) use ($request) {
+            $q->where('nombre', 'like', '%' . $request->search . '%')
+              ->orWhere('descripcion', 'like', '%' . $request->search . '%')
+              ->orWhereHas('categoria', function ($subq) use ($request) {
+                  $subq->where('nombre', 'like', '%' . $request->search . '%');
+              });
+        });
+    }
+    if ($request->has('filter')) {
+        switch ($request->filter) {
+            case 'ventas_desc':
+                $query->orderBy('ventas', 'desc');
+                break;
+            case 'precio_asc':
+                $query->orderBy('precio', 'asc');
+                break;
+            case 'precio_desc':
+                $query->orderBy('precio', 'desc');
+                break;
+            case 'categoria_articulos_pesca':
+                $query->where('categoria', 'artículos de pesca');
+                break;
+            case 'categoria_alimentos':
+                $query->where('categoria', 'alimentos');
+                break;
+        }
+    }
+    $productos = $query->paginate(12);
+
+    if ($request->ajax()) {
+        $html = view('testing.productos.partials.productos', compact('productos'))->render();
+        return response()->json(['html' => $html]);
+    }
+    return view('testing.productos.index', compact('productos'));
+}
+
+
+// METODO PARA CREAR PRODUCTOS
+public function createTesting()
+{
+    $categorias = Categoria::all();
+    return view('testing.productos.create', compact('categorias'));
+}
+
+
+// METODO QUE ALMACENAN LOS PRODUCTOS EN LA BASE DE DATOS
+public function storeTesting(Request $request)
+{
+    $request->validate([
+        'nombre' => 'required|string|max:255',
+        'precio' => 'required|numeric|min:1',
+        'cantidad' => 'required|integer|min:1',
+        'imagen' => 'required|image|max:2048', 
+        'categoria_id' => 'required|exists:categorias,id',
+        'precio_oferta' => $request->has('es_oferta') ? 'required|numeric|min:0.01' : 'nullable|numeric|min:0.01',
+    ]);
+
+    $producto = new Producto($request->except('imagen', 'es_oferta', 'precio_oferta'));
+    $producto->es_oferta = $request->has('es_oferta');
+    $producto->precio_oferta = $request->input('precio_oferta');
+
+    if ($request->hasFile('imagen')) {
+        $producto->imagen_url = $request->file('imagen')->store('productos', 'public');
+    }
+    $producto->save();
+    return redirect()->route('testing.productos.index')->with('success', 'Producto creado exitosamente.');
+}
+
+
+// METODO DE EDICION DE PRODUCTOS
+public function editTesting($id)
+{
+    $producto = Producto::findOrFail($id);
+    $categorias = Categoria::all();
+
+    return view('testing.productos.edit', compact('producto', 'categorias'));
+}
+
+// METODO QUE ACTUALIZA PRODUCTOS
+public function updateTesting(Request $request, $id)
+{
+    $request->validate([
+        'nombre' => 'required|string|max:255',
+        'precio' => 'required|numeric|min:1',
+        'cantidad' => 'required|integer|min:1',
+        'imagen' => 'nullable|image|max:2048',
+        'categoria_id' => 'required|exists:categorias,id',
+        'precio_oferta' => $request->has('es_oferta') ? 'required|numeric|min:0.01' : 'nullable|numeric|min:0.01',
+    ]);
+
+    $producto = Producto::findOrFail($id);
+    $producto->fill($request->except('imagen', 'es_oferta', 'precio_oferta'));
+
+    // Checkbox no enviado si no está marcado, así que se maneja manualmente
+    $producto->es_oferta = $request->has('es_oferta');
+    $producto->precio_oferta = $request->input('precio_oferta');
+
+    if ($request->hasFile('imagen')) {
+        // Opcional: eliminar imagen anterior si existe
+        if ($producto->imagen && \Storage::disk('public')->exists($producto->imagen)) {
+            \Storage::disk('public')->delete($producto->imagen);
+        }
+        $producto->imagen = $request->file('imagen')->store('productos', 'public');
+    }
+    $producto->save();
+
+    return redirect()->route('testing.productos.index')->with('success', 'Producto actualizado correctamente.');
+}
+
+
+// METODO QUE ELIMINA EL PRODUCTO
+public function destroyTesting($id)
+{
+    $producto = Producto::findOrFail($id);
+
+    if ($producto->imagen && \Storage::disk('public')->exists($producto->imagen)) {
+        \Storage::disk('public')->delete($producto->imagen);
+    }
+
+    $producto->delete();
+
+    return redirect()->route('testing.productos.index')->with('success', 'Producto eliminado correctamente.');
+}
+
 
 }

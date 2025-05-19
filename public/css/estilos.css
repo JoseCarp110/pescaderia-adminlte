@@ -17,7 +17,7 @@ body {
 
 /* Cambiar el color de fondo del encabezado (navbar) */
 .navbar {
-    background-color: #004080 !important; /* Azul fuerte */
+    background-color: #004080 !important;
 }
 
 /* Cambiar el color del texto del encabezado */
@@ -113,3 +113,9 @@ footer {
 .card-body {
     padding: 0.5rem; /* Ajusta el padding para un mejor ajuste */
 }
+
+.bg-gradient-info {
+    background: linear-gradient(45deg, #1d3f72, #007bff);
+    color: white !important;
+}
+

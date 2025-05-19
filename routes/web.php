@@ -8,6 +8,7 @@ use App\Http\Controllers\OfertaController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\CarritoController;
+use App\Http\Controllers\ReporteController;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -21,9 +22,9 @@ use Illuminate\Support\Facades\Auth;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+// PROYECTO VIEJO
 // Ruta pública para la página de inicio (ACCESIBLE PARA TODOS)
-Route::get('/', [HomeController::class, 'mostrarProductos'])->name('home');
+//Route::get('/', [HomeController::class, 'mostrarProductos'])->name('home');
 Route::get('/ofertas', [ProductosController::class, 'mostrarOfertas'])->name('productos.ofertas'); // Ruta para ver los productos en oferta
 
 // Autenticación de Laravel
@@ -32,7 +33,7 @@ Auth::routes();
 // Ruta protegida para usuarios autenticados (USUARIOS COMUNES)
 Route::middleware(['auth'])->group(function () {
     // Ruta para que usuarios logueados accedan al home público
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    //Route::get('/home', [HomeController::class, 'index'])->name('home');
 
     // Ruta para que usuarios logueados accedan a la lista de productos
     //Route::get('/productos', [ProductosController::class, 'index'])->name('productos.index');
@@ -93,30 +94,56 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Rutas para Ofertas
     Route::post('/ofertas', [OfertaController::class, 'store'])->name('ofertas.store'); // almacenar productos en ofertas
 
-    // Rutas para Pedidos
+    // Rutas para Pedidos Admines
     Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
     Route::put('/pedidos/{id}/status', [PedidoController::class, 'updateStatus'])->name('pedidos.updateStatus');
     
     
 
+      // ========================================================================
+// RUTAS DE TESTING DEL NUEVO PROYECTO CON ADMINLTE
+// ========================================================================
 
-     // ========================================================================
-    // Rutas de TESTING ========================================================
-   // ==========================================================================
-   
-   // Home principal cuando se loguea un usuario administrador o común
-      Route::get('/home', function () {
-         return view('testing.home');
-      });
+// Ruta base de testing (dashboard principal)
+//Route::get('/testing/home', fn() => view('testing.home'))->middleware(['auth'])->name('testing.home');
+Route::get('/testing/home', function () {
+   return view('testing.home');
+})->middleware(['auth'])->name('testing.home');
+Route::get('/', function () {
+   return redirect()->route('testing.home');
+});
+// Agrupamos todas las rutas bajo el prefijo 'testing' y el middleware de autenticación
+Route::prefix('testing')->middleware(['auth'])->group(function () {
 
-   // RUTAS PROTEGIDAS PARA LOS ADMINISTRADORES (versión testing con AdminLTE)
-      Route::prefix('testing/usuarios')->name('testing.usuarios.')->group(function () {
-         Route::get('/', [UserController::class, 'indexTesting'])->name('index');
-         Route::get('/create', [UserController::class, 'createTesting'])->name('create');
-         Route::post('/', [UserController::class, 'storeTesting'])->name('store');
-         Route::get('/{id}/edit', [UserController::class, 'editTesting'])->name('edit');
-         Route::put('/{id}', [UserController::class, 'updateTesting'])->name('update');
-         Route::delete('/{id}', [UserController::class, 'destroyTesting'])->name('destroy');
-      });
+    // USUARIOS
+    Route::prefix('usuarios')->name('testing.usuarios.')->group(function () {
+        Route::get('/', [UserController::class, 'indexTesting'])->name('index');
+        Route::get('/create', [UserController::class, 'createTesting'])->name('create');
+        Route::post('/', [UserController::class, 'storeTesting'])->name('store');
+        Route::get('/{id}/edit', [UserController::class, 'editTesting'])->name('edit');
+        Route::put('/{id}', [UserController::class, 'updateTesting'])->name('update');
+        Route::delete('/{id}', [UserController::class, 'destroyTesting'])->name('destroy');
+    });
 
+    // PRODUCTOS
+    Route::prefix('productos')->name('testing.productos.')->group(function () {
+        Route::get('/', [ProductosController::class, 'indexTesting'])->name('index');
+        Route::get('/create', [ProductosController::class, 'createTesting'])->name('create');
+        Route::post('/', [ProductosController::class, 'storeTesting'])->name('store');
+        Route::get('/{id}/edit', [ProductosController::class, 'editTesting'])->name('edit');
+        Route::put('/{id}', [ProductosController::class, 'updateTesting'])->name('update');
+        Route::delete('/{id}', [ProductosController::class, 'destroyTesting'])->name('destroy');
+    });
+
+    // PEDIDOS
+    Route::prefix('pedidos')->name('testing.pedidos.')->group(function () {
+        Route::get('/', [PedidoController::class, 'indexTesting'])->name('index');
+        Route::put('/{id}/status', [PedidoController::class, 'updateStatus'])->name('updateStatus');
+    });
+
+    // REPORTES
+    Route::prefix('reportes')->name('testing.reportes.')->group(function () {
+        Route::get('/', [ReporteController::class, 'index'])->name('index');
+    });
+});
 });

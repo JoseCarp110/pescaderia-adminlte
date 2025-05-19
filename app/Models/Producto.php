@@ -22,6 +22,11 @@ class Producto extends Model
     return $this->belongsToMany(Pedido::class, 'pedido_producto')->withPivot('cantidad', 'precio');
     }
 
+    //Relacion con la Tabla Reporte
+    public function reporte()
+    {
+        return $this->hasMany(Reporte::class);
+    }
     
     public function getImagenUrlAttribute()
     {

@@ -158,4 +158,20 @@ class PedidoController extends Controller
         return view('pedidos.verPedido', compact('pedido', 'producto'));
     }
 
+
+    //METODOS DE TESTING **********************************************
+
+    public function indexTesting()
+    {
+    if (auth()->user()->role !== 'admin') {
+        abort(403, 'No tienes permiso para acceder a esta sección.');
+    }
+
+    $pedidos = Pedido::with('user', 'productos')->get();
+
+    return view('testing.pedidos.index', compact('pedidos'));
+    }
+
+    
+
 }

@@ -9,7 +9,8 @@
             @method('PUT')
 
             <!-- Imagen -->
-            <div class="col-md-4 d-flex flex-column align-items-center mt-4">
+           <!-- <div class="col-md-4 d-flex flex-column align-items-center mt-4"> -->
+            <div class="col-md-4 d-flex flex-column justify-content-center align-items-center" style="min-height: 100%;">
                 <img id="profile-picture-preview" 
                      src="{{ $usuario->profile_picture_url }}" 
                      alt="Foto de perfil actual" 
@@ -75,9 +76,16 @@
                         </div>
                         @endif
                     </div>
-                    <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Actualizar Usuario</button>
-                        <a href="{{ route('testing.usuarios.index') }}" class="btn btn-secondary">Cancelar</a>
+                    <!-- Botones alineados con los campos -->
+                    <div class="form-group mt-4">
+                       <div class="row">
+                            <div class="col-md-6 mb-2">
+                              <button type="submit" class="btn btn-primary w-100">Actualizar Usuario</button>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                              <a href="{{ route('testing.usuarios.index') }}" class="btn btn-danger w-100">Cancelar</a>
+                            </div>
+                       </div>
                     </div>
                 </div>
             </div>
